@@ -50,6 +50,8 @@ flowchart LR
 - 已安装：`sam` CLI
 - 已安装并运行：Docker（用于 `sam build` 的 Dockerfile 本地构建）
 
+命令约定：本文档的命令以类 Unix shell 为准；Windows 请在 WSL（bash）中执行，macOS 请在 zsh 中执行。
+
 ## 构建
 
 在仓库根目录执行：
@@ -58,10 +60,24 @@ flowchart LR
 sam build
 ```
 
+提示：本项目的 Lambda 采用 Image 方式部署，且模板提供参数 `FunctionArchitecture`（`x86_64`/`arm64`）用于声明 Lambda 运行架构；它需要与镜像构建出的架构一致，否则运行时可能出现 `exec format error`。
+
 ## 部署
 
 ```bash
 sam deploy --guided
+```
+
+如果你需要显式指定架构，可在部署时覆盖参数，例如：
+
+```bash
+sam deploy --guided --parameter-overrides StageName=dev FunctionArchitecture=x86_64
+```
+
+或：
+
+```bash
+sam deploy --guided --parameter-overrides StageName=dev FunctionArchitecture=arm64
 ```
 
 提示：本项目使用 Image 方式部署（Dockerfile 构建）。如果你不想手动配置 ECR 仓库，可以使用：

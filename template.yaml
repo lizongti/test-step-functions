@@ -7,9 +7,17 @@ Globals:
     Timeout: 30
     MemorySize: 256
     Architectures:
-      - arm64
+      - !Ref FunctionArchitecture
 
 Parameters:
+  FunctionArchitecture:
+    Type: String
+    Default: x86_64
+    AllowedValues:
+      - arm64
+      - x86_64
+    Description: Lambda CPU architecture (must match the container image architecture)
+
   StageName:
     Type: String
     Default: dev

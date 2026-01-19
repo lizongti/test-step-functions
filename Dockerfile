@@ -16,7 +16,10 @@ ARG TARGETARCH
 # SAM Image functions can pass this via Metadata.DockerBuildArgs.GO_MAIN.
 ARG GO_MAIN=./cmd/dispatcher
 
-RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH:-arm64} \
+RUN set -eux; \
+    TARGETOS="${TARGETOS:-linux}"; \
+    TARGETARCH="${TARGETARCH:-$(go env GOARCH)}"; \
+    CGO_ENABLED=0 GOOS="$TARGETOS" GOARCH="$TARGETARCH" \
     go build -trimpath -ldflags="-s -w" -o /out/bootstrap ${GO_MAIN}
 
 FROM public.ecr.aws/lambda/provided:al2

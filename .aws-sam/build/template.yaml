@@ -7,8 +7,15 @@ Globals:
     Timeout: 30
     MemorySize: 256
     Architectures:
-    - arm64
+    - Ref: FunctionArchitecture
 Parameters:
+  FunctionArchitecture:
+    Type: String
+    Default: x86_64
+    AllowedValues:
+    - arm64
+    - x86_64
+    Description: Lambda CPU architecture (must match the container image architecture)
   StageName:
     Type: String
     Default: dev
@@ -125,7 +132,7 @@ Resources:
     Metadata:
       DockerBuildArgs:
         GO_MAIN: ./cmd/dispatcher
-      DockerContext: /Users/tony/Documents/ZSpace/TestStepFunctions
+      DockerContext: /mnt/c/Users/User/Documents/ZSpace/TestStepFunctionsFaster
       DockerTag: dispatcher
       Dockerfile: Dockerfile
       SamResourceId: DispatcherFunction
@@ -149,12 +156,13 @@ Resources:
               Fn::GetAtt:
               - TestQueue
               - Arn
-            BatchSize: 10
+            BatchSize: 1
+            MaximumBatchingWindowInSeconds: 0
       ImageUri: workerfunction:worker
     Metadata:
       DockerBuildArgs:
         GO_MAIN: ./cmd/worker
-      DockerContext: /Users/tony/Documents/ZSpace/TestStepFunctions
+      DockerContext: /mnt/c/Users/User/Documents/ZSpace/TestStepFunctionsFaster
       DockerTag: worker
       Dockerfile: Dockerfile
       SamResourceId: WorkerFunction
@@ -240,7 +248,7 @@ Resources:
     Metadata:
       DockerBuildArgs:
         GO_MAIN: ./cmd/api
-      DockerContext: /Users/tony/Documents/ZSpace/TestStepFunctions
+      DockerContext: /mnt/c/Users/User/Documents/ZSpace/TestStepFunctionsFaster
       DockerTag: api
       Dockerfile: Dockerfile
       SamResourceId: ApiFunction
